@@ -134,10 +134,19 @@ class DataTable {
 		}
 
 		/* Mergin the separated column array */
-		$result = $result;
 		foreach($result as $key => $value) {
 			$result[$key][$order_column_name] = $order_column_array[$key];
 		}
+		return $result;
+	}
+
+	private function function search($result) {
+		$params = $this->getParams();
+
+		$request_columns = $params["columns"];
+		$request_search_query = $search["value"];
+
+		
 		return $result;
 	}
 }
