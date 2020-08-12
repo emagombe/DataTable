@@ -6,14 +6,14 @@ require_once __DIR__."/../autoload.php";
 
 $host = "localhost";
 $port = 3306;
-$database = "znbox_stock";
+$database = "mk";
 $username = "root";
 $password = "";
 $charset = "utf8";
 
 $conn = new PDO("mysql:host=$host;dbname=$database;port=$port;charset=$charset", $username, $password);
 
-$sql = "SELECT * FROM user;";
+$sql = "SELECT * FROM gener;";
 $stmt = $conn->prepare($sql);
 $stmt->execute();
 

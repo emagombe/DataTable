@@ -83,8 +83,24 @@ class DataTable {
 			return $response;
 		}
 
+		/* Sorting result */
 		$this->db_result = $this->sort($this->db_result);
-		
+
+		/* Filtering result */
+		if($params["search"]["value"] != "") {
+			$this->db_result = $this->search($this->db_result);
+		}
+
+		$filtered_length = count($this->db_result);
+
+		/* Limit */
+		$start = intval($params["start"]);
+		$length = intval($params["length"]);
+		$this->db_result = array_slice($this->db_result, $start, $length);
+
+		/* Updating filtered records number */
+		$response["recordsFiltered"] = $filtered_length;
+
 		$response["data"] = $this->db_result;
 		$response["draw"] = $params["draw"];
 		return $response;
@@ -119,7 +135,12 @@ class DataTable {
 
 		/* Order description */
 		$order_column_name = $request_columns[$request_column_order_number]["data"];
+		$order_column_orderable = $request_columns[$request_column_order_number]["orderable"];
 
+		/* Not orderable */
+		if(!$order_column_orderable == "true") {
+			return $result;
+		}
 		/* Separating the array based on the order key only */
 		$order_column_array = [];
 		foreach($result as $key => $value) {
@@ -127,26 +148,49 @@ class DataTable {
 			$order_column_array[] = $value[$order_column_name];
 		}
 
+		/* Ordering column */
 		if(strtolower($order_column_order_dir) == "asc") {
-			sort($order_column_array);
+			asort($order_column_array);
 		} else {
-			rsort($order_column_array);
+			arsort($order_column_array);
 		}
 
-		/* Mergin the separated column array */
-		foreach($result as $key => $value) {
-			$result[$key][$order_column_name] = $order_column_array[$key];
+		/* Ordering the whole result array */
+		$sorted_result = [];
+		foreach($order_column_array as $key => $value) {
+			$sorted_result[] = $result[$key];
 		}
-		return $result;
+		return $sorted_result;
 	}
 
-	private function function search($result) {
+	private function search($result) {
 		$params = $this->getParams();
 
 		$request_columns = $params["columns"];
-		$request_search_query = $search["value"];
+		$request_search_query = $params["search"]["value"];
 
-		
-		return $result;
+		$filtered_result = [];
+		foreach($result as $index => $row) {
+			/* Filter columns */
+			foreach($row as $key => $value) {
+				$break = false;
+				/* Check if column is in the table and is searchable */
+				foreach($params["columns"] as $column) {
+					if($column["data"] == $key && $column["searchable"] == "true") {
+						/* Check if contains search key */
+						if(strpos($value, $request_search_query) !== false) {
+							$filtered_result[] = $row;
+							$break = true;
+							break;
+						}
+					}
+				}
+				/* Breaking if key word found */
+				if($break) {
+					break;
+				}
+			}
+		}
+		return $filtered_result;
 	}
 }

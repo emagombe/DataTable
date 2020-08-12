@@ -10,14 +10,14 @@
 	<table>
 		<thead>
 			<th>id</th>
-			<th>first</th>
-			<th>last</th>
+			<th>name</th>
+			<th>observation</th>
 		</thead>
 		<tbody></tbody>
 		<tfoot>
 			<th>id</th>
-			<th>first</th>
-			<th>last</th>
+			<th>name</th>
+			<th>observation</th>
 		</tfoot>
 	</table>
 	<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
@@ -27,10 +27,11 @@
 			serverSide: true,
 			ajax: "test.php",
 			serverMethod: "post",
+			"processing": true,
 			columns: [
-				{ data: "id" },
-				{ data: "first" },
-				{ data: "last" },
+				{ data: "id", orderable: true },
+				{ data: "name", searchable: true },
+				{ data: "observation" },
 			]
 		});
 	</script>
