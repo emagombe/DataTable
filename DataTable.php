@@ -79,15 +79,16 @@ class DataTable {
 		}
 
 		$request_columns = $params["columns"];
-		$request_columns_order = $params["order"][0];
-		$order_column_dir = $request_columns_order["dir"];	# ASC or DESC
+		$request_column_order = $params["order"][0];
+		$request_column_order_number = $params["order"][0]["column"];	# Column number
+		$order_column_order_dir = $params["order"][0]["dir"];	# ASC or DESC
 		
 		/* Is empty */
 		if(!isset($request_columns[0])) {
 			return $response;
 		}
 		/* Order description */
-		$order_column_name = $request_columns[0]["data"];
+		$order_column_name = $request_columns[$request_column_order_number]["data"];
 
 		/* Separating the array based on the order key only */
 		$order_column_array = [];
@@ -96,17 +97,18 @@ class DataTable {
 			$order_column_array[] = $value[$order_column_name];
 		}
 
-		if($order_column_dir == "asc") {
-			$order_column_array = sort($order_column_array);
+		if(strtolower($order_column_order_dir) == "asc") {
+			sort($order_column_array);
 		} else {
-			$order_column_array = rsort($order_column_array);
+			rsort($order_column_array);
 		}
 
 		/* Mergin the separated column array */
 		foreach($this->db_result as $key => $value) {
 			$this->db_result[$key][$order_column_name] = $order_column_array[$key];
 		}
-
+		#print_r($this->db_result);
+		#die();
 		$response["data"] = $this->db_result;
 		$response["draw"] = $params["draw"];
 		return $response;
