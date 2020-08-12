@@ -78,37 +78,13 @@ class DataTable {
 			return $response;
 		}
 
-		$request_columns = $params["columns"];
-		$request_column_order = $params["order"][0];
-		$request_column_order_number = $params["order"][0]["column"];	# Column number
-		$order_column_order_dir = $params["order"][0]["dir"];	# ASC or DESC
-		
 		/* Is empty */
-		if(!isset($request_columns[0])) {
+		if(!isset($params["columns"][0])) {
 			return $response;
 		}
-		/* Order description */
-		$order_column_name = $request_columns[$request_column_order_number]["data"];
 
-		/* Separating the array based on the order key only */
-		$order_column_array = [];
-		foreach($this->db_result as $key => $value) {
-			/* If it's the order column */
-			$order_column_array[] = $value[$order_column_name];
-		}
-
-		if(strtolower($order_column_order_dir) == "asc") {
-			sort($order_column_array);
-		} else {
-			rsort($order_column_array);
-		}
-
-		/* Mergin the separated column array */
-		foreach($this->db_result as $key => $value) {
-			$this->db_result[$key][$order_column_name] = $order_column_array[$key];
-		}
-		#print_r($this->db_result);
-		#die();
+		$this->db_result = $this->sort($this->db_result);
+		
 		$response["data"] = $this->db_result;
 		$response["draw"] = $params["draw"];
 		return $response;
@@ -131,5 +107,37 @@ class DataTable {
 			return $_POST;
 		}
 		return false;
+	}
+
+	private function sort($result) {
+		$params = $this->getParams();
+
+		$request_columns = $params["columns"];
+		$request_column_order = $params["order"][0];
+		$request_column_order_number = $params["order"][0]["column"];	# Column number
+		$order_column_order_dir = $params["order"][0]["dir"];	# ASC or DESC
+
+		/* Order description */
+		$order_column_name = $request_columns[$request_column_order_number]["data"];
+
+		/* Separating the array based on the order key only */
+		$order_column_array = [];
+		foreach($result as $key => $value) {
+			/* If it's the order column */
+			$order_column_array[] = $value[$order_column_name];
+		}
+
+		if(strtolower($order_column_order_dir) == "asc") {
+			sort($order_column_array);
+		} else {
+			rsort($order_column_array);
+		}
+
+		/* Mergin the separated column array */
+		$result = $result;
+		foreach($result as $key => $value) {
+			$result[$key][$order_column_name] = $order_column_array[$key];
+		}
+		return $result;
 	}
 }
