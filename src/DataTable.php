@@ -28,17 +28,17 @@ class DataTable {
 		} else {
 			/* Check if its a PDO Statement object */
 			if(get_class($result) !== "PDOStatement") {
-				throw new Error("Result input is not a PDOStatement object or Array");
+				throw new \Error("Result input is not a PDOStatement object or Array");
 			}
 
 			if(!$this->isSelect($result->queryString)) {
-				throw new Error("Only Select query allowed");
+				throw new \Error("Only Select query allowed");
 			}
 			$this->sql = $result->queryString;
 
 			/* Preventing SQL errors */
 			if(!$result->execute()) {
-				throw new Error("Failed executing query [" . $result->errorInfo()[0]."] ".$result->errorInfo()[2]);
+				throw new \Error("Failed executing query [" . $result->errorInfo()[0]."] ".$result->errorInfo()[2]);
 			}
 
 			$db_result = [];
