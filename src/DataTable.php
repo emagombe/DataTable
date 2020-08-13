@@ -1,6 +1,6 @@
 <?php
 
-namespace src\DataTable;
+namespace emagombe;
 
 class DataTable {
 
