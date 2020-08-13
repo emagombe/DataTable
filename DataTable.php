@@ -8,51 +8,72 @@ class DataTable {
 	private $columns = [];
 
 	public function __construct($result) {
-		/* Check if its a PDO Statement object */
-		if(get_class($result) !== "PDOStatement") {
-			throw new Error("Result input is not a PDOStatement object");
-		}
+		/* Check if is array */
+		if(is_array($result)) {
 
-		if(!$this->isSelect($result->queryString)) {
-			throw new Error("Only Select query allowed");
-		}
-		$this->sql = $result->queryString;
-
-		/* Preventing SQL errors */
-		if(!$result->execute()) {
-			throw new Error("Failed executing query [" . $result->errorInfo()[0]."] ".$result->errorInfo()[2]);
-		}
-
-		$db_result = [];
-		/* Getting database response */
-		$row_id_counter = 0;
-		foreach($result as $key => $value) {
-			$filtered_data = [];
-			/* Removing numeric indexes from result */
-			foreach((array) $value as $_key => $_value) {
-
-				if(is_int($_key)) { continue; }
-				$filtered_data[$_key] = $_value;
+			/* Getting columns */
+			$columns = [];
+			if(isset($result[0])) {
+				foreach($result[0] as $key => $value) {
+					$columns[] = $key;
+				}
 			}
-			/* Adding extra DataTable Keys */
-			$filtered_data["DT_RowId"] = "row_$row_id_counter";
-			$db_result[$key] = $filtered_data;
-
-			$row_id_counter ++;
-		}
-
-		/* Getting columns */
-		$columns = [];
-		if(isset($db_result[0])) {
-			foreach($db_result[0] as $key => $value) {
-				$columns[] = $key;
+			
+			/* Updating total number of rows */
+			$this->total_rows = count($result);
+			$this->columns = $columns;
+			$this->db_result = $result;
+		} else {
+			/* Check if its a PDO Statement object */
+			if(get_class($result) !== "PDOStatement") {
+				throw new Error("Result input is not a PDOStatement object or Array");
 			}
-		}
 
-		/* Updating total number of rows */
-		$this->total_rows = $result->rowCount();
-		$this->columns = $columns;
-		$this->db_result = $db_result;
+			if(!$this->isSelect($result->queryString)) {
+				throw new Error("Only Select query allowed");
+			}
+			$this->sql = $result->queryString;
+
+			/* Preventing SQL errors */
+			if(!$result->execute()) {
+				throw new Error("Failed executing query [" . $result->errorInfo()[0]."] ".$result->errorInfo()[2]);
+			}
+
+			$db_result = [];
+			/* Getting database response */
+			$row_id_counter = 0;
+			foreach($result as $key => $value) {
+				$filtered_data = [];
+				/* Removing numeric indexes from result */
+				foreach((array) $value as $_key => $_value) {
+
+					if(is_int($_key)) { continue; }
+					$filtered_data[$_key] = $_value;
+				}
+				/* Adding extra DataTable Keys */
+				$filtered_data["DT_RowId"] = "row_$row_id_counter";
+				$db_result[$key] = $filtered_data;
+
+				$row_id_counter ++;
+			}
+
+			/* Getting columns */
+			$columns = [];
+			if(isset($db_result[0])) {
+				foreach($db_result[0] as $key => $value) {
+					$columns[] = $key;
+				}
+			}
+
+			/* Updating total number of rows */
+			$this->total_rows = $result->rowCount();
+			$this->columns = $columns;
+			$this->db_result = $db_result;
+		}
+	}
+
+	public static function fromArray($array) {
+		return $this;
 	}
 
 	/* Create DataTable object with static method */
@@ -91,19 +112,28 @@ class DataTable {
 			$this->db_result = $this->search($this->db_result);
 		}
 
-		$filtered_length = count($this->db_result);
+		/* Updating filtered records number */
+		$response["recordsFiltered"] = count($this->db_result);
 
 		/* Limit */
 		$start = intval($params["start"]);
 		$length = intval($params["length"]);
 		$this->db_result = array_slice($this->db_result, $start, $length);
 
-		/* Updating filtered records number */
-		$response["recordsFiltered"] = $filtered_length;
-
 		$response["data"] = $this->db_result;
 		$response["draw"] = $params["draw"];
 		return $response;
+	}
+
+	/* Add column to table */
+	public function addColumn($column_name, $callback) {
+		$result = [];
+		foreach($this->db_result as $index => $row) {
+			$row[$column_name] = $callback($row);
+			$result[] = $row;
+		}
+		$this->db_result = $result;
+		return $this;
 	}
 
 	/* Check if it's a select query */

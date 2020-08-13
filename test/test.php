@@ -17,7 +17,15 @@ $sql = "SELECT * FROM gener;";
 $stmt = $conn->prepare($sql);
 $stmt->execute();
 
-$result = json_encode(DataTable::create($stmt)->build());
+$result = [];
+foreach($stmt as $item) {
+	$result[] = $item;
+}
+
+$dt = DataTable::create($result)->addColumn("action", function($row) {
+	return "Hello".$row["id"];
+})->build();
+$result = json_encode($dt);
 header("Content-type: Application/json");
 
 print_r($result);
