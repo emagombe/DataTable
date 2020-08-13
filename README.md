@@ -51,7 +51,7 @@ $dt = DataTable::create($result)->addColumn("action", function($row) {
 	return "Hello".$row["id"];
 })->build();
 ```
-|  addColumn params |
+   addColumn params  
 |--------------------|
 | order  | data type |
 |--------|-----------|
