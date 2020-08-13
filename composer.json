@@ -5,7 +5,7 @@
     "keywords": [
         "DataTable",
         "PHP",
-        "server-side",
+        "server-side"
     ],
     "license": "MIT",
     "authors": [
@@ -16,7 +16,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "emagombe\\": "/",
+            "emagombe\\": "/"
         }
     },
     "require": {
