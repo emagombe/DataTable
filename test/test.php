@@ -25,7 +25,6 @@ foreach($stmt as $item) {
 $dt = DataTable::create($result)->addColumn("action", function($row) {
 	return "Hello".$row["id"];
 })->build();
-$result = json_encode($dt);
 header("Content-type: Application/json");
 
-print_r($result);
+echo($dt);
