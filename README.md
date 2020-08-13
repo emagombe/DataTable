@@ -41,3 +41,19 @@ $dt = DataTable::create($array)->build();
 echo $dt;
 ```
 
+## Adding custom column
+Call the object method **addColumn** to add a custom column. This method receives the current **row** as parameter;
+
+***Note***: The callback should return a **string** containing the custom content of the column!
+
+```php
+$dt = DataTable::create($result)->addColumn("action", function($row) {
+	return "Hello".$row["id"];
+})->build();
+```
+|  addColumn params |
+|--------------------|
+| order  | data type |
+|--------|-----------|
+| first  | string    |
+| second | method    |
