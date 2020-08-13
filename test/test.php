@@ -2,7 +2,7 @@
 
 require_once __DIR__."/../autoload.php";
 
-#use DataTable;
+use src\DataTable\DataTable;
 
 $host = "localhost";
 $port = 3306;

@@ -1,5 +1,7 @@
 <?php
 
+namespace src\DataTable;
+
 class DataTable {
 
 	private $sql = "";
