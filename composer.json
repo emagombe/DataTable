@@ -1,0 +1,25 @@
+{
+    "name": "emagombe/datatable",
+    "type": "library",
+    "description": "PHP Server-side processing datatable",
+    "keywords": [
+        "DataTable",
+        "PHP",
+        "server-side",
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "emagombe",
+            "email": "edson.patricio.39@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "emagombe\\": "/",
+        }
+    },
+    "require": {
+    	"php": "^7.0"
+    }
+}
