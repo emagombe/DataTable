@@ -18,7 +18,7 @@ class DataTable {
 					$columns[] = $key;
 				}
 			}
-			
+
 			/* Updating total number of rows */
 			$this->total_rows = count($result);
 			$this->columns = $columns;
@@ -72,10 +72,6 @@ class DataTable {
 		}
 	}
 
-	public static function fromArray($array) {
-		return $this;
-	}
-
 	/* Create DataTable object with static method */
 	public static function create($result) {
 
@@ -122,7 +118,7 @@ class DataTable {
 
 		$response["data"] = $this->db_result;
 		$response["draw"] = $params["draw"];
-		return $response;
+		return json_encode($response);
 	}
 
 	/* Add column to table */
