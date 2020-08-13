@@ -94,12 +94,12 @@ class DataTable {
 
 		/* Return if no parameter sent */
 		if(!$params) {
-			return $response;
+			return json_encode($response);
 		}
 
 		/* Is empty */
 		if(!isset($params["columns"][0])) {
-			return $response;
+			return json_encode($response);
 		}
 
 		/* Sorting result */
