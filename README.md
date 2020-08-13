@@ -48,7 +48,7 @@ Call the object method **addColumn** to add a custom column. This method receive
 
 ```php
 $dt = DataTable::create($result)->addColumn("action", function($row) {
-	return "Hello".$row["id"];
+	return "<b>".$row["name"]."</b>";
 })->build();
 ```
 #### addColumn params  
