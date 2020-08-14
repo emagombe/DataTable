@@ -27,7 +27,7 @@ use emagombe\DataTable;
 $sql = "SELECT * FROM table;";
 $stmt = $conn->prepare($sql);
 
-$dt = DataTable::create($result)->build();
+$dt = DataTable::create($stmt)->build();
 echo $dt; 
 ```
 
