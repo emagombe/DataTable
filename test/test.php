@@ -22,9 +22,6 @@ foreach($stmt as $item) {
 	$result[] = $item;
 }
 
-$dt = DataTable::create($result)->addColumn("action", function($row) {
-	return "Hello".$row["id"];
-})->build();
-header("Content-type: Application/json");
-
-echo($dt);
+DataTable::create($result)->addColumn("action", function($row) {
+	return "<b>".$row["id"]."</b>";
+})->stream();

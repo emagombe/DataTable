@@ -80,6 +80,12 @@ class DataTable {
 		return new DataTable($result);
 	}
 
+	/* Print the response with app/json header */
+	public function stream() {
+		header("Content-type: Application/json");
+		echo $this->build();
+	}
+
 	public function build() {
 
 		/* Building result */

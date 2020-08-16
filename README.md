@@ -41,6 +41,12 @@ $dt = DataTable::create($array)->build();
 echo $dt;
 ```
 
+## Streaming response
+Use the **stream** method to print the response
+```php
+DataTable::create($result)->stream();
+```
+
 ## Adding custom column
 Call the object method **addColumn** to add a custom column. This method receives the current **row** as parameter;
 
