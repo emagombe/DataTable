@@ -2,7 +2,7 @@
 
 This lib allows to process DataTable data content from server-side using PHP
 
-# Demo
+## Demo
 
 Here is the link for demostration
 https://edsonmagombe.xyz/datatable/test/
