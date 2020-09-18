@@ -133,6 +133,7 @@ class DataTable {
 	public function addColumn($column_name, $callback) {
 		$result = [];
 		foreach($this->db_result as $index => $row) {
+			$row = (array) $row;
 			$row[$column_name] = $callback($row);
 			$result[] = $row;
 		}
@@ -179,6 +180,7 @@ class DataTable {
 		$order_column_array = [];
 		foreach($result as $key => $value) {
 			/* If it's the order column */
+			$value = (array) $value;
 			$order_column_array[] = $value[$order_column_name];
 		}
 
