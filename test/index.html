@@ -2,43 +2,75 @@
 <html>
 <head>
 	<title>Test DT</title>
-	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="semantic/semantic.min.css">
+	<link rel="stylesheet" type="text/css" href="semantic/datatables.min.css">
 </head>
 <body>
 	<div style="width: 100%;">
 		<div style="max-width: 1200px; margin: auto;">
 			<h1>1527 Music gener table</h1>
-			<table>
+			<table class="ui table small inverted blue">
 				<thead>
 					<th>id</th>
 					<th>name</th>
-					<th>observation</th>
 					<th>Actions</th>
 				</thead>
 				<tbody></tbody>
 				<tfoot>
 					<th>id</th>
 					<th>name</th>
-					<th>observation</th>
 					<th>Actions</th>
 				</tfoot>
 			</table>
 		</div>
 	</div>
 	<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-	<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
+	<script type="text/javascript" src="semantic/datatables.min.js"></script>
 	<script type="text/javascript">
-		$("table").DataTable({
+
+		var columns = [
+			{ data: "id", orderable: true },
+			{ data: "name", searchable: true },
+			{ data: "action" },
+		];
+		$(".ui.table tfoot th").each(function(index) {
+			var titulo = $(this).text();
+        	$(this).html("<div class=\"ui input small compact columns-search\"><input class=\"\" type=\"text\" placeholder=\"Pesquisar " + titulo + "\" name=\"" + columns[index].data + "\"/></div>");
+    	});
+		var table = $("table").DataTable({
+			lengthChange: true,
+			lengthMenu: [
+				[10, 25, 50, 75, 100, 250, 500, 750, 1000, -1],
+				[10, 25, 50, 75, 100, 250, 500, 750, 1000, "All"],
+			],
 			serverSide: true,
-			ajax: "test.php",
+			ajax: {
+				url: "test.php",
+				method: "post",
+				data: function() {
+					var data = [];
+					that = this;
+					$(".columns-search").each(function() {
+						that[$(this).attr("name")] = $(this).val();
+					});
+				},
+			},
 			serverMethod: "post",
 			processing: true,
-			columns: [
-				{ data: "id", orderable: true },
-				{ data: "name", searchable: true },
-				{ data: "observation" },
-				{ data: "action" },
-			]
+			columns: columns,
+			initComplete: function(settings, json) {
+				$(".selection.ui.dropdown").addClass("tiny");
+				/* Footer search */
+				table.columns().every(function (i) {
+					var that = this;
+					$("input", this.footer()).on("keyup change clear", function() {
+						if(that.search() !== this.value) {
+	                        that.search(this.value).draw();
+	                    }
+	                });
+	            });
+			},
 		});
 	</script>
 </body>

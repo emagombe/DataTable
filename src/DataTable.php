@@ -83,6 +83,7 @@ class DataTable {
 	/* Print the response with app/json header */
 	public function stream() {
 		header("Content-type: Application/json");
+		http_response_code(200);
 		echo $this->build();
 	}
 
@@ -138,6 +139,37 @@ class DataTable {
 			$result[] = $row;
 		}
 		$this->db_result = $result;
+		return $this;
+	}
+
+	public function searchColumn($column_name, $query) {
+		$params = $this->getParams();
+
+		$request_columns = $params["columns"];
+
+		$filtered_result = [];
+		foreach($this->db_result as $index => $row) {
+			/* Filter columns */
+			foreach($row as $key => $value) {
+				$break = false;
+				/* Check if column is in the table and is searchable */
+				foreach($params["columns"] as $column) {
+					if(strtolower($column["data"]) == strtolower($column_name) && $column["searchable"] == "true") {
+						/* Check if contains search key */
+						if(strpos($value, $query) !== false) {
+							$filtered_result[] = $row;
+							$break = true;
+							break;
+						}
+					}
+				}
+				/* Breaking if key word found */
+				if($break) {
+					break;
+				}
+			}
+		}
+		$this->db_result = $filtered_result;
 		return $this;
 	}
 
