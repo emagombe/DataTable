@@ -49,11 +49,12 @@
 				url: "test.php",
 				method: "post",
 				data: function() {
-					var data = [];
+					var data = {};
 					that = this;
 					$(".columns-search").each(function() {
-						that[$(this).attr("name")] = $(this).val();
+						data[$(this).attr("name")] = $(this).val();
 					});
+					return data;
 				},
 			},
 			serverMethod: "post",

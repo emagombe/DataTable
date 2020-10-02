@@ -83,7 +83,6 @@ class DataTable {
 	/* Print the response with app/json header */
 	public function stream() {
 		header("Content-type: Application/json");
-		http_response_code(200);
 		echo $this->build();
 	}
 
@@ -116,6 +115,7 @@ class DataTable {
 		if($params["search"]["value"] != "") {
 			$this->db_result = $this->search($this->db_result);
 		}
+		$this->db_result = $this->search_column($this->db_result);
 
 		/* Updating filtered records number */
 		$response["recordsFiltered"] = count($this->db_result);
@@ -139,37 +139,6 @@ class DataTable {
 			$result[] = $row;
 		}
 		$this->db_result = $result;
-		return $this;
-	}
-
-	public function searchColumn($column_name, $query) {
-		$params = $this->getParams();
-
-		$request_columns = $params["columns"];
-
-		$filtered_result = [];
-		foreach($this->db_result as $index => $row) {
-			/* Filter columns */
-			foreach($row as $key => $value) {
-				$break = false;
-				/* Check if column is in the table and is searchable */
-				foreach($params["columns"] as $column) {
-					if(strtolower($column["data"]) == strtolower($column_name) && $column["searchable"] == "true") {
-						/* Check if contains search key */
-						if(strpos($value, $query) !== false) {
-							$filtered_result[] = $row;
-							$break = true;
-							break;
-						}
-					}
-				}
-				/* Breaking if key word found */
-				if($break) {
-					break;
-				}
-			}
-		}
-		$this->db_result = $filtered_result;
 		return $this;
 	}
 
@@ -257,6 +226,44 @@ class DataTable {
 				if($break) {
 					break;
 				}
+			}
+		}
+		return $filtered_result;
+	}
+
+	private function search_column($result) {
+		$params = $this->getParams();
+
+		$filtered_result = [];
+
+		foreach($result as $index => $row) {
+			/* Check if there is search values */
+			$has_search_values = false;
+			foreach($params["columns"] as $column) {
+				if($column["searchable"] == "true" && isset($column["search"]["value"]) && $column["search"]["value"]) {
+					$has_search_values = true;
+					break;
+				}
+			}
+			if(!$has_search_values) {
+				return $result;
+			}
+
+			$found = false;
+			foreach($params["columns"] as $column) {
+				if($column["searchable"] == "true" && isset($row[$column["data"]]) && $row[$column["data"]]) {
+					if($column["search"]["value"]) {
+						if(strpos($row[$column["data"]], $column["search"]["value"]) !== false) {
+							$found = true;
+						} else {
+							$found = false;
+							break;
+						}
+					}
+				}
+			}
+			if($found) {
+				$filtered_result[] = $row;
 			}
 		}
 		return $filtered_result;
