@@ -240,7 +240,7 @@ class DataTable {
 			/* Check if there is search values */
 			$has_search_values = false;
 			foreach($params["columns"] as $column) {
-				if($column["searchable"] == "true" && isset($column["search"]["value"]) && $column["search"]["value"]) {
+				if($column["searchable"] == "true" && isset($column["search"]["value"]) && $column["search"]["value"] != "") {
 					$has_search_values = true;
 					break;
 				}
@@ -252,7 +252,7 @@ class DataTable {
 			$found = false;
 			foreach($params["columns"] as $column) {
 				if($column["searchable"] == "true" && isset($row[$column["data"]]) && $row[$column["data"]]) {
-					if($column["search"]["value"]) {
+					if($column["search"]["value"] != "") {
 						if(strpos($row[$column["data"]], $column["search"]["value"]) !== false) {
 							$found = true;
 						} else {
