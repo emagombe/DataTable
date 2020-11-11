@@ -253,7 +253,7 @@ class DataTable {
 			foreach($params["columns"] as $column) {
 				if($column["searchable"] == "true" && isset($row[$column["data"]]) && $row[$column["data"]]) {
 					if($column["search"]["value"] != "") {
-						if(strpos($row[$column["data"]], $column["search"]["value"]) === 0) {
+						if(strpos(strtolower($row[$column["data"]]), strtolower($column["search"]["value"])) === 0) {
 							$found = true;
 						} else {
 							$found = false;
