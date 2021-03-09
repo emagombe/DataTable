@@ -12,6 +12,4 @@ $table = DataTable::create($result)->addColumn("action", function($row) {
 	return "<button class=\"ui button icon small circular orange\" name=\"$id\">".$row["name"]."</button>";
 });
 
-$table->searchColumn("name", "aca");
-
 $table->stream();
