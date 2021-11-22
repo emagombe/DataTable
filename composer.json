@@ -2,7 +2,6 @@
     "name": "emagombe/datatable",
     "type": "library",
     "description": "PHP Server-side processing datatable",
-    "version": "4.0",
     "keywords": [
         "DataTable",
         "PHP",
