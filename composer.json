@@ -19,8 +19,5 @@
         "psr-4": {
             "emagombe\\": "src/"
         }
-    },
-    "require": {
-    	"php": "^5.5"
     }
 }
