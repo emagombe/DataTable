@@ -215,7 +215,7 @@ class DataTable {
 				foreach($params["columns"] as $column) {
 					if($column["data"] == $key && $column["searchable"] == "true") {
 						/* Check if contains search key */
-						if(strpos($value, $request_search_query) === 0) {
+						if(strpos(strtolower($value), strtolower($request_search_query)) === 0) {
 							$filtered_result[] = $row;
 							$break = true;
 							break;
